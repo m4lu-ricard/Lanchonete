@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 package pacote.controller;
 
 import pacote.model.*;
@@ -166,3 +167,10 @@ public class LanchoneteController {
         view.mensagem("Pedido finalizado e removido da lista ativa.");
     }
 }
+=======
+package main.java.pacote.controller;
+
+public class LanchoneteController {
+    
+}
+>>>>>>> Stashed changes
