@@ -1,3 +1,3 @@
-public class ItemPedido {
+class ItemPedido extends Pedido {
     
 }
