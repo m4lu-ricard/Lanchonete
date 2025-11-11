@@ -18,13 +18,13 @@ public class LanchoneteController {
     private int nextProdutoId = 1;
     private int nextPedidoId = 1;
 
-    // --- NOVO CONSTRUTOR ---
-    // Este construtor é chamado quando o controller é criado no 'main.java'
+    // --- CONSTRUTOR ---
+    // Carrega automaticamente o cardápio inicial ao iniciar o sistema.
     public LanchoneteController() {
         carregarProdutosIniciais();
     }
 
-    // Método principal do sistema
+    // --- MÉTODO PRINCIPAL ---
     public void iniciarSistema() {
         int opcao;
         do {
@@ -32,7 +32,7 @@ public class LanchoneteController {
             switch (opcao) {
                 case 1 -> gerenciarProdutos();
                 case 2 -> gerenciarPedidos();
-                case 0 -> view.mensagem("Encerrando o sistema... ");
+                case 0 -> view.mensagem("Encerrando o sistema...");
                 default -> view.mensagem("Opção inválida! Tente novamente.");
             }
         } while (opcao != 0);
@@ -58,9 +58,9 @@ public class LanchoneteController {
         String nome = view.lerTexto("Nome do produto: ");
         double preco = view.lerDouble("Preço: ");
         String categoria = view.lerTexto("Categoria: ");
-        Produto p = new Produto(nextProdutoId++, nome, preco, categoria); //
+        Produto p = new Produto(nextProdutoId++, nome, preco, categoria);
         produtos.add(p);
-        view.mensagem(" Produto cadastrado com sucesso!");
+        view.mensagem("Produto cadastrado com sucesso!");
     }
 
     private void listarProdutos() {
@@ -83,9 +83,9 @@ public class LanchoneteController {
         String novoNome = view.lerTexto("Novo nome (" + produto.getNome() + "): ");
         double novoPreco = view.lerDouble("Novo preço (" + produto.getPreco() + "): ");
         String novaCat = view.lerTexto("Nova categoria (" + produto.getCategoria() + "): ");
-        produto.setNome(novoNome); //
-        produto.setPreco(novoPreco); //
-        produto.setCategoria(novaCat); //
+        produto.setNome(novoNome);
+        produto.setPreco(novoPreco);
+        produto.setCategoria(novaCat);
         view.mensagem("Produto atualizado!");
     }
 
@@ -103,7 +103,7 @@ public class LanchoneteController {
             opcao = view.menuPedidos();
             switch (opcao) {
                 case 1 -> criarPedido();
-                case 2 -> adicionarItem();
+                case 2 -> atualizarPedido();
                 case 3 -> listarPedidos();
                 case 4 -> removerItem();
                 case 5 -> cancelarPedido();
@@ -114,43 +114,126 @@ public class LanchoneteController {
         } while (opcao != 0);
     }
 
+    // Criação do pedido + adição de itens no mesmo fluxo
     private void criarPedido() {
-        Pedido pedido = new Pedido(nextPedidoId++); //
+        if (produtos.isEmpty()) {
+            view.mensagem("Nenhum produto cadastrado! Cadastre produtos antes de criar pedidos.");
+            return;
+        }
+
+        Pedido pedido = new Pedido(nextPedidoId++);
         pedidos.add(pedido);
-        view.mensagem("🧾 Pedido nº " + pedido.getNumero() + " criado com sucesso!"); //
+        view.mensagem("Pedido nº " + pedido.getNumero() + " criado!");
+        view.mensagem("Agora, adicione os itens ao pedido.");
+
+        boolean adicionando = true;
+        while (adicionando) {
+            listarProdutos();
+            int idProd = view.lerInt("Digite o ID do produto (0 para finalizar): ");
+            if (idProd == 0) {
+                adicionando = false;
+                break;
+            }
+
+            Produto prod = produtos.stream()
+                    .filter(p -> p.getId() == idProd)
+                    .findFirst()
+                    .orElse(null);
+
+            if (prod == null) {
+                view.mensagem("Produto não encontrado. Tente novamente.");
+                continue;
+            }
+
+            int qtd = view.lerInt("Quantidade: ");
+            if (qtd <= 0) {
+                view.mensagem("Quantidade inválida!");
+                continue;
+            }
+
+            pedido.adicionarProduto(prod, qtd);
+            view.mensagem(qtd + "x " + prod.getNome() + " adicionado(s) ao pedido.");
+        }
+
+        view.mensagem("Pedido nº " + pedido.getNumero() + " criado com sucesso!");
+        view.mensagem(pedido.resumo());
     }
 
-    private void adicionarItem() {
-        if (pedidos.isEmpty()) { view.mensagem("Nenhum pedido criado."); return; }
+    // Atualiza um pedido já existente (adiciona novos itens)
+    private void atualizarPedido() {
+        if (pedidos.isEmpty()) {
+            view.mensagem("Nenhum pedido criado ainda!");
+            return;
+        }
 
         listarPedidos();
-        int num = view.lerInt("Número do pedido: ");
-        Pedido pedido = pedidos.stream().filter(p -> p.getNumero() == num).findFirst().orElse(null);
-        if (pedido == null) { view.mensagem("Pedido não encontrado."); return; }
+        int num = view.lerInt("Digite o número do pedido que deseja atualizar: ");
+        Pedido pedido = pedidos.stream()
+                .filter(p -> p.getNumero() == num)
+                .findFirst()
+                .orElse(null);
 
-        listarProdutos();
-        int idProd = view.lerInt("ID do produto: ");
-        Produto prod = produtos.stream().filter(p -> p.getId() == idProd).findFirst().orElse(null);
-        if (prod == null) { view.mensagem("Produto inexistente."); return; }
+        if (pedido == null) {
+            view.mensagem("Pedido não encontrado.");
+            return;
+        }
 
-        int qtd = view.lerInt("Quantidade: ");
-        pedido.adicionarProduto(prod, qtd); //
-        view.mensagem("Item adicionado ao pedido!");
+        if (produtos.isEmpty()) {
+            view.mensagem("Nenhum produto cadastrado! Cadastre produtos antes de atualizar pedidos.");
+            return;
+        }
+
+        view.mensagem("Atualizando Pedido nº " + pedido.getNumero());
+
+        boolean adicionando = true;
+        while (adicionando) {
+            listarProdutos();
+            int idProd = view.lerInt("Digite o ID do produto (0 para encerrar): ");
+            if (idProd == 0) {
+                adicionando = false;
+                break;
+            }
+
+            Produto prod = produtos.stream()
+                    .filter(p -> p.getId() == idProd)
+                    .findFirst()
+                    .orElse(null);
+
+            if (prod == null) {
+                view.mensagem("Produto não encontrado. Tente novamente.");
+                continue;
+            }
+
+            int qtd = view.lerInt("Quantidade: ");
+            if (qtd <= 0) {
+                view.mensagem("Quantidade inválida!");
+                continue;
+            }
+
+            pedido.adicionarProduto(prod, qtd);
+            view.mensagem(qtd + "x " + prod.getNome() + " adicionado(s) ao pedido.");
+        }
+
+        view.mensagem("Pedido nº " + pedido.getNumero() + " atualizado com sucesso!");
+        view.mensagem(pedido.resumo());
     }
 
     private void listarPedidos() {
         if (pedidos.isEmpty()) view.mensagem("Nenhum pedido registrado.");
-        else pedidos.forEach(p -> view.mensagem(p.resumo() + "\n")); //
+        else pedidos.forEach(p -> view.mensagem(p.resumo() + "\n"));
     }
 
     private void removerItem() {
         listarPedidos();
         int num = view.lerInt("Número do pedido: ");
         Pedido pedido = pedidos.stream().filter(p -> p.getNumero() == num).findFirst().orElse(null);
-        if (pedido == null) { view.mensagem("Pedido não encontrado."); return; }
+        if (pedido == null) {
+            view.mensagem("Pedido não encontrado.");
+            return;
+        }
 
         int idProd = view.lerInt("ID do produto para remover: ");
-        boolean ok = pedido.removerProduto(idProd); //
+        boolean ok = pedido.removerProduto(idProd);
         view.mensagem(ok ? "Item removido." : "Item não encontrado.");
     }
 
@@ -165,15 +248,17 @@ public class LanchoneteController {
         listarPedidos();
         int num = view.lerInt("Número do pedido para finalizar: ");
         Pedido pedido = pedidos.stream().filter(p -> p.getNumero() == num).findFirst().orElse(null);
-        if (pedido == null) { view.mensagem("Pedido não encontrado."); return; }
+        if (pedido == null) {
+            view.mensagem("Pedido não encontrado.");
+            return;
+        }
 
-        view.mensagem("Resumo Final:\n" + pedido.resumo()); //
+        view.mensagem("Resumo Final:\n" + pedido.resumo());
         pedidos.remove(pedido);
         view.mensagem("Pedido finalizado e removido da lista ativa.");
     }
 
-    // --- NOVO MÉTODO PRIVADO ---
-    // Este método popula a lista 'produtos' com os itens do seu cardápio
+    /* ---------------------- CARDÁPIO INICIAL ---------------------- */
     private void carregarProdutosIniciais() {
         // Categoria: Hambúrguer
         produtos.add(new Produto(nextProdutoId++, "Pombo Da Paz", 29.99, "Hambúrguer"));

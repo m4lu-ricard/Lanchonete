@@ -3,48 +3,56 @@ package pacote.view;
 import java.util.Scanner;
 
 /**
- * Responsável pela interação com o usuário via console.
- * Alta coesão — lida apenas com exibição e entrada de dados.
+ * Classe responsável pela interação com o usuário.
+ * Segue o princípio GRASP "Alta Coesão" — trata apenas da exibição e leitura de dados.
  */
 public class MenuView {
+
     private final Scanner sc = new Scanner(System.in);
 
+    // Menu principal
     public int menuPrincipal() {
-        System.out.println("\n=============================");
-        System.out.println(" BURGUER CODE SYSTEM ");
-        System.out.println("=============================");
-        System.out.println("1 - Gerenciar Produtos");
-        System.out.println("2 - Gerenciar Pedidos");
+        System.out.println("\n===============================");
+        System.out.println("🍔   BURGUER CODE SYSTEM   🍟");
+        System.out.println("===============================");
+        System.out.println("1 - Gerenciar Produtos (Cardápio)");
+        System.out.println("2 - Gerenciar Pedidos (Atendimento)");
         System.out.println("0 - Sair");
-        System.out.print("Escolha: ");
+        System.out.print("👉 Escolha uma opção: ");
         return sc.nextInt();
     }
 
+    // Menu de produtos
     public int menuProdutos() {
-        System.out.println("\n--- PRODUTOS ---");
-        System.out.println("1 - Cadastrar");
-        System.out.println("2 - Listar");
-        System.out.println("3 - Atualizar");
-        System.out.println("4 - Remover");
-        System.out.println("0 - Voltar");
-        System.out.print("Escolha: ");
+        System.out.println("\n===============================");
+        System.out.println("📦   GERENCIAMENTO DE PRODUTOS");
+        System.out.println("===============================");
+        System.out.println("1 - Cadastrar novo produto");
+        System.out.println("2 - Listar produtos");
+        System.out.println("3 - Atualizar produto");
+        System.out.println("4 - Remover produto");
+        System.out.println("0 - Voltar ao menu principal");
+        System.out.print("👉 Escolha uma opção: ");
         return sc.nextInt();
     }
 
+    // Menu de pedidos
     public int menuPedidos() {
-        System.out.println("\n--- PEDIDOS ---");
+        System.out.println("\n===============================");
+        System.out.println("🧾   GERENCIAMENTO DE PEDIDOS");
+        System.out.println("===============================");
         System.out.println("1 - Criar novo pedido");
-        System.out.println("2 - Adicionar item");
-        System.out.println("3 - Listar pedidos");
-        System.out.println("4 - Remover item");
+        System.out.println("2 - Atualizar pedido (adicionar novos itens)");
+        System.out.println("3 - Listar todos os pedidos");
+        System.out.println("4 - Remover item de um pedido");
         System.out.println("5 - Cancelar pedido");
         System.out.println("6 - Finalizar pedido");
-        System.out.println("0 - Voltar");
-        System.out.print("Escolha: ");
+        System.out.println("0 - Voltar ao menu principal");
+        System.out.print("👉 Escolha uma opção: ");
         return sc.nextInt();
     }
 
-    // Métodos auxiliares de leitura
+    // Métodos auxiliares
     public String lerTexto(String msg) {
         System.out.print(msg);
         sc.nextLine(); // limpar buffer
