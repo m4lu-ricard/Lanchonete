@@ -7,7 +7,7 @@ import pacote.controller.LanchoneteController;
  * Atende ao padrão GRASP Controller ao delegar o controle ao LanchoneteController.
  */
 public class main {
-    public static void main(String[] args) {
+    public static void Main(String[] args) {
         LanchoneteController controller = new LanchoneteController();
         controller.iniciarSistema();
     }
