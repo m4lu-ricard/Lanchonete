@@ -1,23 +1,23 @@
 /**
- * =================================================================================
- *  JUSTIFICATIVA GRASP: HIGH COHESION (Alta Coesão)
- * =================================================================================
- * *  QUAL PADRÃO?
- * GRASP High Cohesion (Alta Coesão).
- * *  ONDE FOI APLICADO?
- * Esta classe inteira (MenuView) aplica o padrão.
- * *  POR QUÊ?
- * Esta classe tem uma responsabilidade única e altamente focada: gerenciar
- * toda a interação com o usuário através do console. Ela é a única
- * responsável por:
- * 1. Exibir menus e mensagens (System.out.println).
- * 2. Ler dados do usuário (Scanner).
- * * Ela não tem nenhuma lógica de negócio (como calcular totais ou criar
- * produtos). Isso a torna altamente coesa. Se no futuro o sistema
- * precisar de uma interface gráfica (GUI), esta classe poderia ser
- * substituída sem que nenhuma outra parte do sistema (Model ou 
- * Controller) precisasse ser modificada.
- * * =================================================================================
+ * ======================================================================
+ * JUSTIFICATIVA GRASP: High Cohesion (Alta Coesão)
+ * ======================================================================
+ *
+ * Por que esta classe existe?
+ * Esta classe é um exemplo perfeito de Alta Coesão.
+ *
+ * A sua única responsabilidade é ser a "cara" do sistema no console.
+ * Ela só sabe fazer duas coisas:
+ * 1. Mostrar texto na tela (System.out.println)
+ * 2. Ler o que o usuário digita (Scanner)
+ *
+ * Ela não tem *nenhuma* lógica de negócio. Ela não sabe o que é um
+ * "Produto" ou como se calcula um "Pedido". Ela só exibe o que o
+ * Controller manda e devolve o que o usuário digita.
+ *
+ * Vantagem: Se amanhã quiséssemos trocar este console por uma
+ * interface gráfica (GUI), só teríamos de reescrever esta classe.
+ * O Controller e o Model continuariam a funcionar da mesma forma.
  */
 
 package pacote.view;

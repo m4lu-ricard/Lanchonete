@@ -1,20 +1,18 @@
 /**
- * =================================================================================
- *  JUSTIFICATIVA GRASP: HIGH COHESION (Alta Coesão)
- * =================================================================================
- * *  QUAL PADRÃO?
- * GRASP High Cohesion (Alta Coesão).
- * *  ONDE FOI APLICADO?
- * Esta classe inteira (Produto / ItemPedido) aplica o padrão.
- * *  POR QUÊ?
- * Esta classe tem uma responsabilidade única e bem definida:
- * (Para Produto): Apenas representar os dados de um produto do cardápio.
- * (Para ItemPedido): Apenas representar um produto dentro de um pedido, 
- * com sua quantidade.
- * * Ela não se preocupa em como é exibida na 'View' ou como o 'Controller'
- * gerencia o fluxo. Ao manter o foco em uma única tarefa, a classe se torna
- * mais fácil de entender, manter e reutilizar.
- * * =================================================================================
+ * ======================================================================
+ * JUSTIFICATIVA GRASP: High Cohesion (Alta Coesão)
+ * ======================================================================
+ *
+ * Por que esta classe existe?
+ * Esta classe é um exemplo simples e direto de Alta Coesão.
+ *
+ * A sua única responsabilidade é "ser" um Produto (ou um ItemPedido).
+ * Ela apenas guarda os seus próprios dados (ID, nome, preço, etc.).
+ *
+ * Ela não tenta fazer coisas que não são da sua conta, como imprimir-se
+ * no menu (isso é a View que faz) ou controlar o fluxo do pedido (isso
+ * é o Controller). Ela só representa um "dado" do nosso sistema,
+ * o que a torna fácil de entender e reutilizar.
  */
 
 package pacote.model;

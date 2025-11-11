@@ -1,30 +1,32 @@
 /**
- * =================================================================================
- *  JUSTIFICATIVA GRASP: CREATOR (Criador)
- * =================================================================================
- * *  QUAL PADRÃO?
- * GRASP Creator (Criador).
- * *  ONDE FOI APLICADO?
- * No método 'adicionarProduto()', especificamente na linha onde 
- * 'new ItemPedido(produto, quantidade)' é chamado.
- * *  POR QUÊ?
- * O padrão Creator sugere que a Classe A deve ser responsável por criar 
- * instâncias da Classe B se:
- * - A "contém" ou "agrega" B (um Pedido "contém" ItensPedido).
- * - A "usa de perto" B.
- * * Neste caso, a classe 'Pedido' é a "dona" lógica da lista de 'ItemPedido'. 
- * Faz total sentido que ela mesma seja responsável por instanciar (criar)
- * novos objetos 'ItemPedido' para adicionar à sua própria lista.
- * * Isso mantém a lógica de criação no lugar mais apropriado, aumentando a 
- * coesão e a clareza do código.
- * * =================================================================================
+ * ======================================================================
+ * JUSTIFICATIVAS GRASP (Creator e Alta Coesão)
+ * ======================================================================
  *
- *  JUSTIFICATIVA GRASP: HIGH COHESION (Alta Coesão)
- * =================================================================================
- * * Esta classe também demonstra Alta Coesão. Sua única responsabilidade é
- * gerenciar o estado de UM pedido: seus itens, seu status e seu total. 
- * Ela não tenta exibir menus ou controlar o fluxo da aplicação.
- * * =================================================================================
+ * 1. Padrão: Creator (Criador)
+ * Onde: No método 'adicionarProduto()'.
+ * Por quê? O Pedido "contém" uma lista de ItensPedido. O padrão Creator
+ * diz que a classe que "agrega" ou "possui" os objetos deve ser
+ * responsável por criá-los.
+ *
+ * Na prática: Em vez de o Controller criar um 'ItemPedido' e
+ * "empurrá-lo" para o Pedido, eu fiz com que o próprio Pedido
+ * o instancie (com 'new ItemPedido(...)') quando 'adicionarProduto'
+ * é chamado. Parece mais lógico e mantém a criação do item no
+ * lugar certo.
+ *
+ * ----------------------------------------------------------------------
+ *
+ * 2. Padrão: High Cohesion (Alta Coesão)
+ * Onde: A classe inteira.
+ * Por quê? Esta classe tem um "foco" muito claro: ela só se preocupa
+ * em ser um Pedido. Ela sabe gerir os seus itens, calcular o seu
+ * total e mudar o seu próprio status.
+ *
+ * Ela não tenta mostrar menus (isso é da View) nem controlar o
+ * fluxo da aplicação (isso é do Controller). Por ter essa
+ * responsabilidade única, ela é coesa, o que a torna mais
+ * fácil de entender e de modificar no futuro.
  */
 
 package pacote.model;

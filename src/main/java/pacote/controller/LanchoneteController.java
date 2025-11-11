@@ -1,24 +1,25 @@
 /**
- * =================================================================================
- *  JUSTIFICATIVA GRASP: CONTROLLER (Controlador)
- * =================================================================================
- * *  QUAL PADRÃO?
- * GRASP Controller (Controlador).
- * *  ONDE FOI APLICADO?
- * Esta classe inteira (LanchoneteController) aplica o padrão.
- * *  POR QUÊ?
- * Esta classe atua como a "ponte" principal entre a interface do usuário (o
- * pacote 'view') e a lógica de negócios (o pacote 'model').
- * * 1.  Ela recebe "eventos" da View (ex: o usuário escolheu a opção '1' no
- * menuPrincipal).
- * 2.  Ela coordena as classes do Model para realizar o trabalho (ex: 
- * 'pedidos.add(new Pedido(...))', 'pedido.adicionarProduto(...)').
- * * Isso atende ao princípio GRASP Controller pois centraliza o fluxo do
- * sistema, orquestrando as operações. A principal vantagem é o 
- * **Baixo Acoplamento**: a 'View' (MenuView) não conhece o 'Model' (Pedido),
- * e o 'Model' não conhece a 'View'. O Controller é o único que conhece ambos,
- * tornando o sistema muito mais fácil de manter e modificar.
- * * =================================================================================
+ * ======================================================================
+ * JUSTIFICATIVA GRASP: Controller (Controlador)
+ * ======================================================================
+ *
+ * Por que esta classe existe?
+ * Eu apliquei o padrão GRASP Controller aqui. Pensei nesta classe
+ * como o "cérebro" ou o "maestro" de todo o sistema.
+ *
+ * Como ela funciona:
+ * 1.  Ela é a única que "conhece" tanto a View (menus) quanto o Model (lógica).
+ * 2.  Quando a View (MenuView) diz "o usuário digitou '1'", o Controller
+ * decide o que fazer (ex: chamar o método 'gerenciarProdutos()').
+ * 3.  Ela coordena as operações, pedindo ao Model para fazer o trabalho
+ * pesado (ex: 'pedidos.add(new Pedido(...))').
+ *
+ * Qual a vantagem?
+ * A principal vantagem é o Baixo Acoplamento. A View (menus) não
+ * faz ideia de como um Pedido é calculado, e o Model (Pedido, Produto)
+ * não faz ideia de como os menus são mostrados. Eles só falam
+ * com o Controller. Se quiséssemos mudar a View para uma interface
+ * gráfica, o Model nem ficaria a saber.
  */
 
 package pacote.controller;
