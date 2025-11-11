@@ -1,3 +1,26 @@
+/**
+ * =================================================================================
+ *  JUSTIFICATIVA GRASP: CONTROLLER (Controlador)
+ * =================================================================================
+ * *  QUAL PADRÃO?
+ * GRASP Controller (Controlador).
+ * *  ONDE FOI APLICADO?
+ * Esta classe inteira (LanchoneteController) aplica o padrão.
+ * *  POR QUÊ?
+ * Esta classe atua como a "ponte" principal entre a interface do usuário (o
+ * pacote 'view') e a lógica de negócios (o pacote 'model').
+ * * 1.  Ela recebe "eventos" da View (ex: o usuário escolheu a opção '1' no
+ * menuPrincipal).
+ * 2.  Ela coordena as classes do Model para realizar o trabalho (ex: 
+ * 'pedidos.add(new Pedido(...))', 'pedido.adicionarProduto(...)').
+ * * Isso atende ao princípio GRASP Controller pois centraliza o fluxo do
+ * sistema, orquestrando as operações. A principal vantagem é o 
+ * **Baixo Acoplamento**: a 'View' (MenuView) não conhece o 'Model' (Pedido),
+ * e o 'Model' não conhece a 'View'. O Controller é o único que conhece ambos,
+ * tornando o sistema muito mais fácil de manter e modificar.
+ * * =================================================================================
+ */
+
 package pacote.controller;
 
 import pacote.model.*;

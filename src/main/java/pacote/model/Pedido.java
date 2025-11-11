@@ -1,3 +1,32 @@
+/**
+ * =================================================================================
+ *  JUSTIFICATIVA GRASP: CREATOR (Criador)
+ * =================================================================================
+ * *  QUAL PADRÃO?
+ * GRASP Creator (Criador).
+ * *  ONDE FOI APLICADO?
+ * No método 'adicionarProduto()', especificamente na linha onde 
+ * 'new ItemPedido(produto, quantidade)' é chamado.
+ * *  POR QUÊ?
+ * O padrão Creator sugere que a Classe A deve ser responsável por criar 
+ * instâncias da Classe B se:
+ * - A "contém" ou "agrega" B (um Pedido "contém" ItensPedido).
+ * - A "usa de perto" B.
+ * * Neste caso, a classe 'Pedido' é a "dona" lógica da lista de 'ItemPedido'. 
+ * Faz total sentido que ela mesma seja responsável por instanciar (criar)
+ * novos objetos 'ItemPedido' para adicionar à sua própria lista.
+ * * Isso mantém a lógica de criação no lugar mais apropriado, aumentando a 
+ * coesão e a clareza do código.
+ * * =================================================================================
+ *
+ *  JUSTIFICATIVA GRASP: HIGH COHESION (Alta Coesão)
+ * =================================================================================
+ * * Esta classe também demonstra Alta Coesão. Sua única responsabilidade é
+ * gerenciar o estado de UM pedido: seus itens, seu status e seu total. 
+ * Ela não tenta exibir menus ou controlar o fluxo da aplicação.
+ * * =================================================================================
+ */
+
 package pacote.model;
 
 import java.time.LocalDateTime;
