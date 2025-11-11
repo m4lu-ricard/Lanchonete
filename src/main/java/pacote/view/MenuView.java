@@ -11,7 +11,7 @@ public class MenuView {
 
     public int menuPrincipal() {
         System.out.println("\n=============================");
-        System.out.println("🍔 BURGUER CODE SYSTEM 🍟");
+        System.out.println(" BURGUER CODE SYSTEM ");
         System.out.println("=============================");
         System.out.println("1 - Gerenciar Produtos");
         System.out.println("2 - Gerenciar Pedidos");

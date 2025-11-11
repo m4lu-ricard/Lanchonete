@@ -26,7 +26,7 @@ public class LanchoneteController {
             switch (opcao) {
                 case 1 -> gerenciarProdutos();
                 case 2 -> gerenciarPedidos();
-                case 0 -> view.mensagem("Encerrando o sistema... 🍔");
+                case 0 -> view.mensagem("Encerrando o sistema... ");
                 default -> view.mensagem("Opção inválida! Tente novamente.");
             }
         } while (opcao != 0);
@@ -54,7 +54,7 @@ public class LanchoneteController {
         String categoria = view.lerTexto("Categoria: ");
         Produto p = new Produto(nextProdutoId++, nome, preco, categoria);
         produtos.add(p);
-        view.mensagem("✅ Produto cadastrado com sucesso!");
+        view.mensagem(" Produto cadastrado com sucesso!");
     }
 
     private void listarProdutos() {
