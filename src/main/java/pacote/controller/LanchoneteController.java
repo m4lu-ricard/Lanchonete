@@ -18,6 +18,12 @@ public class LanchoneteController {
     private int nextProdutoId = 1;
     private int nextPedidoId = 1;
 
+    // --- NOVO CONSTRUTOR ---
+    // Este construtor é chamado quando o controller é criado no 'main.java'
+    public LanchoneteController() {
+        carregarProdutosIniciais();
+    }
+
     // Método principal do sistema
     public void iniciarSistema() {
         int opcao;
@@ -52,7 +58,7 @@ public class LanchoneteController {
         String nome = view.lerTexto("Nome do produto: ");
         double preco = view.lerDouble("Preço: ");
         String categoria = view.lerTexto("Categoria: ");
-        Produto p = new Produto(nextProdutoId++, nome, preco, categoria);
+        Produto p = new Produto(nextProdutoId++, nome, preco, categoria); //
         produtos.add(p);
         view.mensagem(" Produto cadastrado com sucesso!");
     }
@@ -77,9 +83,9 @@ public class LanchoneteController {
         String novoNome = view.lerTexto("Novo nome (" + produto.getNome() + "): ");
         double novoPreco = view.lerDouble("Novo preço (" + produto.getPreco() + "): ");
         String novaCat = view.lerTexto("Nova categoria (" + produto.getCategoria() + "): ");
-        produto.setNome(novoNome);
-        produto.setPreco(novoPreco);
-        produto.setCategoria(novaCat);
+        produto.setNome(novoNome); //
+        produto.setPreco(novoPreco); //
+        produto.setCategoria(novaCat); //
         view.mensagem("Produto atualizado!");
     }
 
@@ -109,9 +115,9 @@ public class LanchoneteController {
     }
 
     private void criarPedido() {
-        Pedido pedido = new Pedido(nextPedidoId++);
+        Pedido pedido = new Pedido(nextPedidoId++); //
         pedidos.add(pedido);
-        view.mensagem("🧾 Pedido nº " + pedido.getNumero() + " criado com sucesso!");
+        view.mensagem("🧾 Pedido nº " + pedido.getNumero() + " criado com sucesso!"); //
     }
 
     private void adicionarItem() {
@@ -128,13 +134,13 @@ public class LanchoneteController {
         if (prod == null) { view.mensagem("Produto inexistente."); return; }
 
         int qtd = view.lerInt("Quantidade: ");
-        pedido.adicionarProduto(prod, qtd);
+        pedido.adicionarProduto(prod, qtd); //
         view.mensagem("Item adicionado ao pedido!");
     }
 
     private void listarPedidos() {
         if (pedidos.isEmpty()) view.mensagem("Nenhum pedido registrado.");
-        else pedidos.forEach(p -> view.mensagem(p.resumo() + "\n"));
+        else pedidos.forEach(p -> view.mensagem(p.resumo() + "\n")); //
     }
 
     private void removerItem() {
@@ -144,7 +150,7 @@ public class LanchoneteController {
         if (pedido == null) { view.mensagem("Pedido não encontrado."); return; }
 
         int idProd = view.lerInt("ID do produto para remover: ");
-        boolean ok = pedido.removerProduto(idProd);
+        boolean ok = pedido.removerProduto(idProd); //
         view.mensagem(ok ? "Item removido." : "Item não encontrado.");
     }
 
@@ -161,8 +167,32 @@ public class LanchoneteController {
         Pedido pedido = pedidos.stream().filter(p -> p.getNumero() == num).findFirst().orElse(null);
         if (pedido == null) { view.mensagem("Pedido não encontrado."); return; }
 
-        view.mensagem("Resumo Final:\n" + pedido.resumo());
+        view.mensagem("Resumo Final:\n" + pedido.resumo()); //
         pedidos.remove(pedido);
         view.mensagem("Pedido finalizado e removido da lista ativa.");
+    }
+
+    // --- NOVO MÉTODO PRIVADO ---
+    // Este método popula a lista 'produtos' com os itens do seu cardápio
+    private void carregarProdutosIniciais() {
+        // Categoria: Hambúrguer
+        produtos.add(new Produto(nextProdutoId++, "Pombo Da Paz", 29.99, "Hambúrguer"));
+        produtos.add(new Produto(nextProdutoId++, "60%", 40.00, "Hambúrguer"));
+        produtos.add(new Produto(nextProdutoId++, "C Program Burguer", 19.72, "Hambúrguer"));
+        produtos.add(new Produto(nextProdutoId++, "Redbull Burguer", 33.00, "Hambúrguer"));
+        produtos.add(new Produto(nextProdutoId++, "Vscode Burguer", 25.00, "Hambúrguer"));
+        produtos.add(new Produto(nextProdutoId++, "Java Lovers", 25.00, "Hambúrguer"));
+
+        // Categoria: Porção
+        produtos.add(new Produto(nextProdutoId++, "Batata Frita Tradicional", 20.00, "Porção"));
+        produtos.add(new Produto(nextProdutoId++, "Batata Frita Com Cheddar", 26.00, "Porção"));
+        produtos.add(new Produto(nextProdutoId++, "Onion Rings", 25.00, "Porção"));
+        produtos.add(new Produto(nextProdutoId++, "Dadinho de Tapioca", 22.00, "Porção"));
+
+        // Categoria: Bebida
+        produtos.add(new Produto(nextProdutoId++, "Refrigerante Lata (350ml)", 5.00, "Bebida"));
+        produtos.add(new Produto(nextProdutoId++, "Água Mineral (500ml)", 4.00, "Bebida"));
+        produtos.add(new Produto(nextProdutoId++, "Suco Natural", 8.00, "Bebida"));
+        produtos.add(new Produto(nextProdutoId++, "Redbull (250ml)", 8.00, "Bebida"));
     }
 }
