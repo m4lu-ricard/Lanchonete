@@ -38,13 +38,12 @@ public class LanchoneteController {
     }
 
     /* ---------------------- CRUD PRODUTOS ---------------------- */
-    // (Esta seção não muda, é igual à que você já tem)
     private void gerenciarProdutos() {
         int opcao;
         do {
             opcao = view.menuProdutos();
             switch (opcao) {
-                case 1 -> cadastrarProduto();
+                case 1 -> cadastrarProduto(); // <-- MÉTODO ATUALIZADO
                 case 2 -> listarProdutos();
                 case 3 -> atualizarProduto();
                 case 4 -> removerProduto();
@@ -54,23 +53,49 @@ public class LanchoneteController {
         } while (opcao != 0);
     }
 
+    // --- MÉTODO ATUALIZADO ---
     private void cadastrarProduto() {
         String nome = view.lerTexto("Nome do produto: ");
         double preco = view.lerDouble("Preço: ");
-        String categoria = view.lerTexto("Categoria: ");
+        
+        // --- NOVA LÓGICA DE CATEGORIA ---
+        String categoria = null;
+        do {
+            int opcaoCategoria = view.menuCategoria(); // Chama o novo menu
+            
+            switch (opcaoCategoria) {
+                case 1:
+                    categoria = "Bebida";
+                    break;
+                case 2:
+                    categoria = "Porção";
+                    break;
+                case 3:
+                    categoria = "Hamburguer"; // Usando "Hamburguer" sem acento
+                    break;
+                default:
+                    view.mensagem("Opção inválida! Tente novamente.");
+                    // categoria continua nula, o loop vai repetir
+                    break; 
+            }
+        } while (categoria == null); // Loop até o usuário escolher uma opção válida
+        // --- FIM DA NOVA LÓGICA ---
+
         Produto p = new Produto(nextProdutoId++, nome, preco, categoria);
         produtos.add(p);
-        view.mensagem("Produto cadastrado com sucesso!");
+        view.mensagem("✅ Produto cadastrado com sucesso na categoria: " + categoria);
     }
 
     private void listarProdutos() {
         if (produtos.isEmpty()) view.mensagem("Nenhum produto cadastrado.");
         else {
             view.mensagem("=== CARDÁPIO ATUAL ===");
-            produtos.forEach(System.out::println);
+            produtos.forEach(p -> view.mensagem(p.toString()));
         }
     }
 
+    // --- ATUALIZADO ---
+    // Atualiza também o 'atualizarProduto' para usar o menu de categoria
     private void atualizarProduto() {
         listarProdutos();
         int id = view.lerInt("Digite o ID do produto a atualizar: ");
@@ -82,10 +107,33 @@ public class LanchoneteController {
 
         String novoNome = view.lerTexto("Novo nome (" + produto.getNome() + "): ");
         double novoPreco = view.lerDouble("Novo preço (" + produto.getPreco() + "): ");
-        String novaCat = view.lerTexto("Nova categoria (" + produto.getCategoria() + "): ");
+        
+        // --- NOVA LÓGICA DE CATEGORIA (TAMBÉM APLICADA AQUI) ---
+        view.mensagem("Categoria atual: " + produto.getCategoria());
+        String novaCat = null;
+        do {
+            int opcaoCategoria = view.menuCategoria(); // Reutiliza o menu
+            
+            switch (opcaoCategoria) {
+                case 1:
+                    novaCat = "Bebida";
+                    break;
+                case 2:
+                    novaCat = "Porção";
+                    break;
+                case 3:
+                    novaCat = "Hamburguer";
+                    break;
+                default:
+                    view.mensagem("Opção inválida! Tente novamente.");
+                    break; 
+            }
+        } while (novaCat == null); 
+        // --- FIM DA NOVA LÓGICA ---
+
         produto.setNome(novoNome);
         produto.setPreco(novoPreco);
-        produto.setCategoria(novaCat);
+        produto.setCategoria(novaCat); // Salva a nova categoria
         view.mensagem("Produto atualizado!");
     }
 
@@ -97,6 +145,7 @@ public class LanchoneteController {
     }
 
     /* ---------------------- CRUD PEDIDOS ---------------------- */
+    // (O restante do arquivo não muda)
     private void gerenciarPedidos() {
         int opcao;
         do {
@@ -105,16 +154,15 @@ public class LanchoneteController {
                 case 1 -> criarPedido();
                 case 2 -> atualizarPedido();
                 case 3 -> listarPedidos();
-                case 4 -> removerItem();
-                case 5 -> cancelarPedido(); // ATUALIZADO
-                case 6 -> finalizarPedido(); // ATUALIZADO
+                case 4 -> removerItem(); 
+                case 5 -> cancelarPedido();
+                case 6 -> finalizarPedido();
                 case 0 -> view.mensagem("Voltando ao menu principal...");
                 default -> view.mensagem("Opção inválida!");
             }
         } while (opcao != 0);
     }
 
-    // Criação do pedido + adição de itens no mesmo fluxo
     private void criarPedido() {
         if (produtos.isEmpty()) {
             view.mensagem("Nenhum produto cadastrado! Cadastre produtos antes de criar pedidos.");
@@ -122,7 +170,7 @@ public class LanchoneteController {
         }
 
         Pedido pedido = new Pedido(nextPedidoId++);
-        pedidos.add(pedido);
+        pedidos.add(pedido); 
         view.mensagem("Pedido nº " + pedido.getNumero() + " criado!");
         view.mensagem("Agora, adicione os itens ao pedido.");
 
@@ -155,11 +203,15 @@ public class LanchoneteController {
             view.mensagem(qtd + "x " + prod.getNome() + " adicionado(s) ao pedido.");
         }
 
-        view.mensagem("Pedido nº " + pedido.getNumero() + " criado com sucesso!");
-        view.mensagem(pedido.resumo());
+        if (pedido.estaVazio()) {
+            pedidos.remove(pedido);
+            view.mensagem("Pedido nº " + pedido.getNumero() + " estava vazio e foi descartado.");
+        } else {
+            view.mensagem("Pedido nº " + pedido.getNumero() + " criado com sucesso!");
+            view.mensagem(pedido.resumo());
+        }
     }
 
-    // Atualiza um pedido já existente (adiciona novos itens)
     private void atualizarPedido() {
         if (pedidos.isEmpty()) {
             view.mensagem("Nenhum pedido criado ainda!");
@@ -178,7 +230,6 @@ public class LanchoneteController {
             return;
         }
         
-        // --- NOVA VERIFICAÇÃO DE STATUS ---
         if (pedido.getStatus() != StatusPedido.EM_PREPARACAO) {
             view.mensagem("Apenas pedidos 'Em Preparação' podem ser atualizados.");
             return;
@@ -226,7 +277,6 @@ public class LanchoneteController {
 
     private void listarPedidos() {
         if (pedidos.isEmpty()) view.mensagem("Nenhum pedido registrado.");
-        // Imprime a lista de resumos
         else pedidos.forEach(p -> view.mensagem(p.resumo()));
     }
 
@@ -245,7 +295,6 @@ public class LanchoneteController {
             return;
         }
         
-        // --- NOVA VERIFICAÇÃO DE STATUS ---
         if (pedido.getStatus() != StatusPedido.EM_PREPARACAO) {
             view.mensagem("Apenas pedidos 'Em Preparação' podem ter itens removidos.");
             return;
@@ -260,11 +309,16 @@ public class LanchoneteController {
         String resultado = pedido.removerItem(idProd, qtd);
         
         view.mensagem(resultado);
-        view.mensagem("--- Pedido Atualizado ---");
-        view.mensagem(pedido.resumo());
+
+        if (pedido.estaVazio()) {
+            pedidos.remove(pedido);
+            view.mensagem("Todos os itens foram removidos. Pedido nº " + num + " foi descartado.");
+        } else {
+            view.mensagem("--- Pedido Atualizado ---");
+            view.mensagem(pedido.resumo());
+        }
     }
 
-    // --- MÉTODO ATUALIZADO ---
     private void cancelarPedido() {
         listarPedidos();
         int num = view.lerInt("Número do pedido a cancelar: ");
@@ -275,7 +329,6 @@ public class LanchoneteController {
             return;
         }
 
-        // Verifica o status antes de cancelar
         if (pedido.getStatus() == StatusPedido.FINALIZADO) {
             view.mensagem("Este pedido já foi finalizado e não pode ser cancelado.");
             return;
@@ -285,13 +338,11 @@ public class LanchoneteController {
             return;
         }
 
-        // Em vez de remover, chama o método para mudar o status
         pedido.cancelar();
         view.mensagem("Pedido nº " + num + " foi alterado para 'Cancelado'.");
         view.mensagem(pedido.resumo());
     }
 
-    // --- MÉTODO ATUALIZADO ---
     private void finalizarPedido() {
         listarPedidos();
         int num = view.lerInt("Número do pedido para finalizar: ");
@@ -302,7 +353,6 @@ public class LanchoneteController {
             return;
         }
 
-        // Verifica o status antes de finalizar
         if (pedido.getStatus() == StatusPedido.CANCELADO) {
             view.mensagem("Este pedido está cancelado e não pode ser finalizado.");
             return;
@@ -312,23 +362,26 @@ public class LanchoneteController {
             return;
         }
 
+        if (pedido.estaVazio()) {
+            view.mensagem("Pedido nº " + num + " está vazio e não pode ser finalizado. Será descartado.");
+            pedidos.remove(pedido);
+            return;
+        }
+
         view.mensagem("Resumo Final:\n" + pedido.resumo());
-        
-        // Em vez de remover, chama o método para mudar o status
         pedido.finalizar();
-        
         view.mensagem("Pedido nº " + num + " foi alterado para 'Finalizado'.");
     }
 
     /* ---------------------- CARDÁPIO INICIAL ---------------------- */
     private void carregarProdutosIniciais() {
         // Categoria: Hambúrguer
-        produtos.add(new Produto(nextProdutoId++, "Pombo Da Paz", 29.99, "Hambúrguer"));
-        produtos.add(new Produto(nextProdutoId++, "60%", 40.00, "Hambúrguer"));
-        produtos.add(new Produto(nextProdutoId++, "C Program Burguer", 19.72, "Hambúrguer"));
-        produtos.add(new Produto(nextProdutoId++, "Redbull Burguer", 33.00, "Hambúrguer"));
-        produtos.add(new Produto(nextProdutoId++, "Vscode Burguer", 25.00, "Hambúrguer"));
-        produtos.add(new Produto(nextProdutoId++, "Java Lovers", 25.00, "Hambúrguer"));
+        produtos.add(new Produto(nextProdutoId++, "Pombo Da Paz", 29.99, "Hamburguer"));
+        produtos.add(new Produto(nextProdutoId++, "60%", 40.00, "Hamburguer"));
+        produtos.add(new Produto(nextProdutoId++, "C Program Burguer", 19.72, "Hamburguer"));
+        produtos.add(new Produto(nextProdutoId++, "Redbull Burguer", 33.00, "Hamburguer"));
+        produtos.add(new Produto(nextProdutoId++, "Vscode Burguer", 25.00, "Hamburguer"));
+        produtos.add(new Produto(nextProdutoId++, "Java Lovers", 25.00, "Hamburguer"));
 
         // Categoria: Porção
         produtos.add(new Produto(nextProdutoId++, "Batata Frita Tradicional", 20.00, "Porção"));

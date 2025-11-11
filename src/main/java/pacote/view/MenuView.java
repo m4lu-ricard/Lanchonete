@@ -52,6 +52,20 @@ public class MenuView {
         return sc.nextInt();
     }
 
+    // --- NOVO MÉTODO ---
+    /**
+     * Menu para seleção de categoria de produto.
+     */
+    public int menuCategoria() {
+        System.out.println("\n--- SELECIONE A CATEGORIA ---");
+        System.out.println("1 - Bebida");
+        System.out.println("2 - Porção");
+        System.out.println("3 - Hamburguer"); // Sem acento, para consistência
+        System.out.print("👉 Escolha uma opção: ");
+        return sc.nextInt();
+    }
+
+
     // Métodos auxiliares
     public String lerTexto(String msg) {
         System.out.print(msg);

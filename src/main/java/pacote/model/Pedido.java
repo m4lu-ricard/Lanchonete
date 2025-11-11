@@ -25,6 +25,11 @@ public class Pedido {
     public int getNumero() { return numero; }
     public StatusPedido getStatus() { return status; } // <-- NOVO GETTER
 
+    // --- NOVO MÉTODO PARA VERIFICAR SE O PEDIDO ESTÁ VAZIO ---
+    public boolean estaVazio() {
+        return itens.isEmpty();
+    }
+
     // --- NOVOS MÉTODOS PARA ALTERAR O STATUS ---
     public void finalizar() {
         this.status = StatusPedido.FINALIZADO;
@@ -95,7 +100,7 @@ public class Pedido {
         sb.append(">>> STATUS: ").append(status.getDescricao()).append(" <<<\n");
         
         if (itens.isEmpty()) {
-            sb.append("  (Vazio)\n");
+            sb.append("  (Vazio)\n"); // Atualizado para mostrar (Vazio)
         } else {
             sb.append("Itens:\n");
             for (ItemPedido i : itens) sb.append("  ").append(i).append("\n");
