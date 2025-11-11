@@ -19,7 +19,6 @@ public class LanchoneteController {
     private int nextPedidoId = 1;
 
     // --- CONSTRUTOR ---
-    // Carrega automaticamente o cardápio inicial ao iniciar o sistema.
     public LanchoneteController() {
         carregarProdutosIniciais();
     }
@@ -39,6 +38,7 @@ public class LanchoneteController {
     }
 
     /* ---------------------- CRUD PRODUTOS ---------------------- */
+    // (Esta seção não muda, é igual à que você já tem)
     private void gerenciarProdutos() {
         int opcao;
         do {
@@ -106,8 +106,8 @@ public class LanchoneteController {
                 case 2 -> atualizarPedido();
                 case 3 -> listarPedidos();
                 case 4 -> removerItem();
-                case 5 -> cancelarPedido();
-                case 6 -> finalizarPedido();
+                case 5 -> cancelarPedido(); // ATUALIZADO
+                case 6 -> finalizarPedido(); // ATUALIZADO
                 case 0 -> view.mensagem("Voltando ao menu principal...");
                 default -> view.mensagem("Opção inválida!");
             }
@@ -177,6 +177,12 @@ public class LanchoneteController {
             view.mensagem("Pedido não encontrado.");
             return;
         }
+        
+        // --- NOVA VERIFICAÇÃO DE STATUS ---
+        if (pedido.getStatus() != StatusPedido.EM_PREPARACAO) {
+            view.mensagem("Apenas pedidos 'Em Preparação' podem ser atualizados.");
+            return;
+        }
 
         if (produtos.isEmpty()) {
             view.mensagem("Nenhum produto cadastrado! Cadastre produtos antes de atualizar pedidos.");
@@ -220,42 +226,98 @@ public class LanchoneteController {
 
     private void listarPedidos() {
         if (pedidos.isEmpty()) view.mensagem("Nenhum pedido registrado.");
-        else pedidos.forEach(p -> view.mensagem(p.resumo() + "\n"));
+        // Imprime a lista de resumos
+        else pedidos.forEach(p -> view.mensagem(p.resumo()));
     }
 
     private void removerItem() {
+        if (pedidos.isEmpty()) {
+            view.mensagem("Nenhum pedido registrado.");
+            return;
+        }
+        
         listarPedidos();
-        int num = view.lerInt("Número do pedido: ");
+        int num = view.lerInt("Número do pedido para alterar: ");
         Pedido pedido = pedidos.stream().filter(p -> p.getNumero() == num).findFirst().orElse(null);
+        
+        if (pedido == null) {
+            view.mensagem("Pedido não encontrado.");
+            return;
+        }
+        
+        // --- NOVA VERIFICAÇÃO DE STATUS ---
+        if (pedido.getStatus() != StatusPedido.EM_PREPARACAO) {
+            view.mensagem("Apenas pedidos 'Em Preparação' podem ter itens removidos.");
+            return;
+        }
+
+        view.mensagem("--- Itens do Pedido nº" + pedido.getNumero() + " ---");
+        view.mensagem(pedido.resumo());
+        view.mensagem("----------------------------");
+
+        int idProd = view.lerInt("Digite o ID do produto para remover: ");
+        int qtd = view.lerInt("Quantidade a remover: ");
+        String resultado = pedido.removerItem(idProd, qtd);
+        
+        view.mensagem(resultado);
+        view.mensagem("--- Pedido Atualizado ---");
+        view.mensagem(pedido.resumo());
+    }
+
+    // --- MÉTODO ATUALIZADO ---
+    private void cancelarPedido() {
+        listarPedidos();
+        int num = view.lerInt("Número do pedido a cancelar: ");
+        Pedido pedido = pedidos.stream().filter(p -> p.getNumero() == num).findFirst().orElse(null);
+        
         if (pedido == null) {
             view.mensagem("Pedido não encontrado.");
             return;
         }
 
-        int idProd = view.lerInt("ID do produto para remover: ");
-        boolean ok = pedido.removerProduto(idProd);
-        view.mensagem(ok ? "Item removido." : "Item não encontrado.");
+        // Verifica o status antes de cancelar
+        if (pedido.getStatus() == StatusPedido.FINALIZADO) {
+            view.mensagem("Este pedido já foi finalizado e não pode ser cancelado.");
+            return;
+        }
+        if (pedido.getStatus() == StatusPedido.CANCELADO) {
+            view.mensagem("Este pedido já está cancelado.");
+            return;
+        }
+
+        // Em vez de remover, chama o método para mudar o status
+        pedido.cancelar();
+        view.mensagem("Pedido nº " + num + " foi alterado para 'Cancelado'.");
+        view.mensagem(pedido.resumo());
     }
 
-    private void cancelarPedido() {
-        listarPedidos();
-        int num = view.lerInt("Número do pedido a cancelar: ");
-        boolean ok = pedidos.removeIf(p -> p.getNumero() == num);
-        view.mensagem(ok ? "Pedido cancelado." : "Pedido não encontrado.");
-    }
-
+    // --- MÉTODO ATUALIZADO ---
     private void finalizarPedido() {
         listarPedidos();
         int num = view.lerInt("Número do pedido para finalizar: ");
         Pedido pedido = pedidos.stream().filter(p -> p.getNumero() == num).findFirst().orElse(null);
+        
         if (pedido == null) {
             view.mensagem("Pedido não encontrado.");
             return;
         }
 
+        // Verifica o status antes de finalizar
+        if (pedido.getStatus() == StatusPedido.CANCELADO) {
+            view.mensagem("Este pedido está cancelado e não pode ser finalizado.");
+            return;
+        }
+        if (pedido.getStatus() == StatusPedido.FINALIZADO) {
+            view.mensagem("Este pedido já está finalizado.");
+            return;
+        }
+
         view.mensagem("Resumo Final:\n" + pedido.resumo());
-        pedidos.remove(pedido);
-        view.mensagem("Pedido finalizado e removido da lista ativa.");
+        
+        // Em vez de remover, chama o método para mudar o status
+        pedido.finalizar();
+        
+        view.mensagem("Pedido nº " + num + " foi alterado para 'Finalizado'.");
     }
 
     /* ---------------------- CARDÁPIO INICIAL ---------------------- */

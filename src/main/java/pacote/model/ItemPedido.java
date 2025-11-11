@@ -15,12 +15,23 @@ public class ItemPedido {
     public Produto getProduto() { return produto; }
     public int getQuantidade() { return quantidade; }
 
+    // --- NOVO MÉTODO ---
+    // Permite que o Pedido altere a quantidade (para remoção parcial)
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+    }
+
     public double getSubtotal() {
         return produto.getPreco() * quantidade;
     }
 
     @Override
     public String toString() {
-        return quantidade + "x " + produto.getNome() + "  R$" + String.format("%.2f", getSubtotal());
+        // --- MUDANÇA AQUI ---
+        // Agora exibe o ID do produto para facilitar a remoção
+        return "[ID " + produto.getId() + "] " + 
+               quantidade + "x " + 
+               produto.getNome() + "  R$" + 
+               String.format("%.2f", getSubtotal());
     }
 }
